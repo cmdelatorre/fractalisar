@@ -29,19 +29,25 @@
 <h2>
 <a id="realidad" class="anchor" href="#realidad" aria-hidden="true"><span class="octicon octicon-link"></span></a>Realidad</h2>
 
-<p>A modo general, uno de los objetivos principales del proyecto es el de montar una instalación (puede ser una habitación, pasillo, salón, etc) en la que se captan datos de vídeo y de distintos sensores. Estos se combinan, continuamente, en tiempo real, con secuencias de imágenes pre-generadas y el resultado final es mostrado.</p>
+<p>A modo general, uno de los objetivos principales del proyecto es el de montar una instalación (puede ser una habitación, pasillo, salón, etc) en la que se captan datos de vídeo y de distintos sensores. Estos se combinan y muestran, continuamente, en tiempo real, con secuencias de imágenes pre-generadas.</p>
 
 <p>Los datos de los sensores son usados para controlar el proceso de mezcla de las imágenes: tanto para seleccionar con qué imagen será <em>aumentado</em> cada frame de video, como para definir cómo serán combinadas las dos imágenes.</p>
 
 <p>El resultado, una secuencia de imágenes (video) con <em>realidad aumentada</em>, puede guardarse en un archivo, proyectarse, verse en un monitor o distribuirse por la web mediante streaming de video en tiempo real.</p>
 
-<p>Todo este proceso fue realizado (y puede ser replicado) utilizando una cámara web, una placa Arduino y un proyector conectados a una computadora corriendo un software escrito específicamente para este proyecto (que puede obtenerse <a href="https://github.com/cmdelatorre/fractalisar">aquí</a>).</p>
+<p>Todo este proceso es dirigido por un programa escrito específicamente para este proyecto (que puede obtenerse <a href="https://github.com/cmdelatorre/fractalisar">aquí</a>).</p>
 
 <h3>
-<a id="arduino-y-opencv" class="anchor" href="#arduino-y-opencv" aria-hidden="true"><span class="octicon octicon-link"></span></a>Arduino y OpenCV</h3>
+<a id="arduino-python-y-opencv" class="anchor" href="#arduino-python-y-opencv" aria-hidden="true"><span class="octicon octicon-link"></span></a>Arduino, Python y OpenCV</h3>
+
+<p>La placa <a href="http://www.arduino.cc/">Arduino</a> es perfecta para este proyecto porque es muy fácil de utilizar y provee la capacidad de conectar sensores muy variados. Además puede comunicarse fácilmente con la computadora mediante un puerto USB o por la red (Ethernet o WiFi).</p>
+
+<p>El programa que conecta todas las partes fue escrito en el lenguaje de programación <a href="https://www.python.org/">Python</a>. Entre otras ventajas de esta desición, está el hecho de que se puede usar la librería <a href="http://opencv.org/">OpenCV</a> que facilita enormemente el proceso de trabajar con video e imágenes.</p>
 
 <h3>
-<a id="posibilidades-de-configuración" class="anchor" href="#posibilidades-de-configuraci%C3%B3n" aria-hidden="true"><span class="octicon octicon-link"></span></a>Posibilidades de configuración</h3>
+<a id="posibilidades" class="anchor" href="#posibilidades" aria-hidden="true"><span class="octicon octicon-link"></span></a>Posibilidades</h3>
+
+<p>Más allá de la implementación existente, el proyecto permite</p>
 
 <h2>
 <a id="aumentada" class="anchor" href="#aumentada" aria-hidden="true"><span class="octicon octicon-link"></span></a>Aumentada</h2>
@@ -53,6 +59,12 @@
 
 <h3>
 <a id="glitch" class="anchor" href="#glitch" aria-hidden="true"><span class="octicon octicon-link"></span></a>Glitch</h3>
+
+<h1>
+<a id="prototipo" class="anchor" href="#prototipo" aria-hidden="true"><span class="octicon octicon-link"></span></a>Prototipo</h1>
+
+<p>Todo este proceso fue realizado (y puede ser replicado) utilizando una cámara web, una placa Arduino y un proyector conectados a una computadora corriendo un software escrito específicamente para este proyecto (que puede obtenerse <a href="https://github.com/cmdelatorre/fractalisar">aquí</a>).
+En esta implementación en particular, se utilizó un sensor ultrasónico de </p>
 
 <h1>
 <a id="autores" class="anchor" href="#autores" aria-hidden="true"><span class="octicon octicon-link"></span></a>Autores</h1>
