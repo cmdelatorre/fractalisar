@@ -22,10 +22,10 @@ from fractal_manager import FractalsDirectory, BlendModes
 from sensors import TestSensor
 
 
-# Camera ID, in case there are many cameras available.
-CAMERA_ID = 1
+# Camera ID, in case there are many cameras available. Normally 0 (first camera)
+CAMERA_ID = 0
 
-# Size of the captured frame
+# Size of the captured frame. Depends on the camera capabilities.
 FRAME_WIDTH = 1280
 FRAME_HEIGHT = 720
 
@@ -46,7 +46,7 @@ SHOW_RESULT = True
 SHOW_CONTROLS = False
 
 # If True, the original image will be saved in a file.
-SAVE_IMAGE = True
+SAVE_IMAGE = False
 
 # If True and SAVE_IMAGE is also True, this is the filename where the original
 # image will be saved.
