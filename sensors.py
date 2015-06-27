@@ -1,3 +1,5 @@
+#-*- coding: utf-8 -*-
+
 # FractalisAR: an augmented reality experiment with fractals
 # Copyright (C) 2015  Carlos Matías de la Torre
 

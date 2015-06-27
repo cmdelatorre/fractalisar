@@ -1,3 +1,5 @@
+#-*- coding: utf-8 -*-
+
 # FractalisAR: an augmented reality experiment with fractals
 # Copyright (C) 2015  Carlos Matías de la Torre
 
@@ -22,10 +24,15 @@ from fractal_manager import FractalsDirectory, BlendModes
 from sensors import TestSensor
 
 
-# Camera ID, in case there are many cameras available. Normally 0 (first camera)
-CAMERA_ID = 0
+# A camera ID or a path to a video file,
+# To use a camera, this setting must be a number, typically 0. In the case that
+# there are many cameras available, they have increasing IDs (0, 1, 2, ...).
+# If a string is given, it must be a path to a video file.
+INPUT = 0
 
-# Size of the captured frame. Depends on the camera capabilities.
+# Size of the captured and output frame. Depends on the camera capabilities.
+# If a file is given as input, this can be set to None to use the video file
+# resolution.
 FRAME_WIDTH = 1280
 FRAME_HEIGHT = 720
 

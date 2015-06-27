@@ -1,3 +1,5 @@
+#-*- coding: utf-8 -*-
+
 # FractalisAR: an augmented reality experiment with fractals
 # Copyright (C) 2015  Carlos Matías de la Torre
 
@@ -15,6 +17,7 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
+import argparse
 import cv2
 import sys
 
@@ -23,9 +26,19 @@ import settings
 from fractal_manager import FractalManager
 
 
-def main(*args):
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-i', '--input_file',
+                        help='Use a video file instead of a camera.')
+    args = parser.parse_args()
+
     # Input setup
-    source = settings.CAMERA_ID
+    if args.input_file:
+        source = args.input_file
+        use_camera = False
+    else:
+        source = settings.INPUT
+        use_camera = True
     if len(args) > 1:
         source = args[1]
     cap = cv2.VideoCapture(source)
@@ -87,8 +100,4 @@ def main(*args):
     if settings.SAVE_RESULT:
         result_out.release()
     cv2.destroyAllWindows()
-
-
-if __name__ == '__main__':
-    main(sys.argv)
     sys.exit(0)
