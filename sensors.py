@@ -1,3 +1,5 @@
+#-*- coding: utf-8 -*-
+
 # FractalisAR: an augmented reality experiment with fractals
 # Copyright (C) 2015  Carlos Matías de la Torre
 
@@ -29,7 +31,7 @@ class Sensor(object):
 # DistanceSensor reads data from the Serial port where an Arduino board sends
 # distance data.
 class DistanceSensor(Sensor):
-    def __init__(self, device, baud):
+    def __init__(self, device='/dev/ttyACM0', baud=9600):
         self.arduino = serial.Serial(device, baud)
 
     def get_data(self):
@@ -48,7 +50,7 @@ class TestSensor(Sensor):
     the inverse sequence is returned. Finally, it starts again.
 
     """
-    def __init__(self, min_val, max_val):
+    def __init__(self, min_val=0, max_val=200):
         self.min_val = min_val
         self.max_val = max_val
         self.current = min_val

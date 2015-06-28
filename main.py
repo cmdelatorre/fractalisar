@@ -1,3 +1,5 @@
+#-*- coding: utf-8 -*-
+
 # FractalisAR: an augmented reality experiment with fractals
 # Copyright (C) 2015  Carlos Matías de la Torre
 
@@ -15,45 +17,65 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
+import configargparse
 import cv2
+import logging
+import serial
 import sys
 
-import settings
+from collections import defaultdict
 
+from fractals_config import FRACTALS_CONFIG
 from fractal_manager import FractalManager
+from sensors import DistanceSensor, TestSensor
 
 
-def main(*args):
+SENSORS = defaultdict(TestSensor)
+try:
+    SENSORS['arduino'] = DistanceSensor()
+except serial.SerialException:
+    logging.info('No Arduino board found in default location. '
+                 'Default TestSensor will be used')
+
+
+def main(settings):
     # Input setup
-    source = settings.CAMERA_ID
-    if len(args) > 1:
-        source = args[1]
+    source = settings.input
+    if isinstance(source, int):
+        use_camera = True
+    elif isinstance(source, str):
+        use_camera = False
+    else:
+        raise ValueError("Expected int or str for input")
+
     cap = cv2.VideoCapture(source)
-    # Try to set the camera frame size with the existing settings but as it
-    # doesn't work equally for all cameras, record the resulting frame size
-    # parameters
-    cap.set(cv2.CAP_PROP_FRAME_HEIGHT, settings.FRAME_HEIGHT)
-    cap.set(cv2.CAP_PROP_FRAME_WIDTH, settings.FRAME_WIDTH)
+    if use_camera:
+        # Try to set the camera frame size with the existing settings but as it
+        # doesn't work equally for all cameras, afterwards record the resulting
+        # frame size parameters
+        cap.set(cv2.CAP_PROP_FRAME_HEIGHT, settings.height)
+        cap.set(cv2.CAP_PROP_FRAME_WIDTH, settings.width)
+
     height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
     width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
 
-    manager = FractalManager(sensor=settings.SENSOR)
-    for fractal_conf in settings.FRACTALS_CONFIG:
+    manager = FractalManager(sensor=SENSORS[settings.sensor])
+    for fractal_conf in FRACTALS_CONFIG:
         fractal_conf.update({'height': height, 'width': width})
         manager.register(**fractal_conf)
 
     original_out = None
-    if settings.SAVE_IMAGE:
+    if settings.original_image_filename:
         fourcc = cv2.VideoWriter_fourcc(*'XVID')
-        original_out = cv2.VideoWriter(settings.SAVE_IMAGE_FILENAME, fourcc,
+        original_out = cv2.VideoWriter(settings.original_image_filename, fourcc,
                                        20.0, (width, height))
     result_out = None
-    if settings.SAVE_RESULT:
+    if settings.result_filename:
         fourcc = cv2.VideoWriter_fourcc(*'XVID')
-        result_out = cv2.VideoWriter(settings.SAVE_RESULT_FILENAME, fourcc,
+        result_out = cv2.VideoWriter(settings.result_filename, fourcc,
                                      20.0, (width, height))
 
-    if settings.SHOW_IMAGE:
+    if settings.show_image:
         cv2.namedWindow('image')
 
     time = 0
@@ -61,20 +83,22 @@ def main(*args):
         frame_loaded, frame = cap.read()
         if frame_loaded:
             time += 1
+        else:
+            continue
 
         fractal = manager.get_current()
         result = fractal.merge(frame)
 
-        if settings.SHOW_IMAGE:
+        if settings.show_image:
             cv2.imshow('image', frame)
-        if settings.SHOW_RESULT:
+        if settings.show_result:
             cv2.imshow('fractalized', result)
 
-        if settings.SAVE_IMAGE:
+        if settings.original_image_filename:
             original_out.write(frame)
-        if settings.SAVE_RESULT:
+        if settings.result_filename:
             result_out.write(result)
-        if settings.STDOUT:
+        if settings.stdout:
             sys.stdout.write(result.tostring())
 
         # Press 'q' to exit the loop
@@ -82,13 +106,42 @@ def main(*args):
             break
     # When everything done, release the capture
     cap.release()
-    if settings.SAVE_IMAGE:
+    if settings.original_image_filename:
         original_out.release()
-    if settings.SAVE_RESULT:
+    if settings.result_filename:
         result_out.release()
     cv2.destroyAllWindows()
 
 
 if __name__ == '__main__':
-    main(sys.argv)
+    args = configargparse.ArgParser(default_config_files=['settings.ini'])
+    args.add('-c', '--config', required=False, is_config_file=True,
+               help='Custom config file path')
+    args.add('-i', '--input', default=0, metavar='SOURCE',
+               help='Camera ID or path to video file')
+    # Setup
+    args.add('-w', '--width', '--frame_width', default=640,
+             help='Width of the captured frame')
+    args.add('-he', '--height', '--frame_height', default=480,
+             help='Height of the captured frame')
+    args.add('-n', '--sensor', default='test',
+             help='Where to take distance data from')
+    # Save
+    args.add('-o', '--original_image_filename', metavar='PATH',
+             help='If given, the original video will be saved in this file.')
+    args.add('-r', '--result_filename', metavar='PATH',
+             help='If given, the resulting video will be saved in this file.')
+    # Show
+    args.add('-no', '--dont_show_image', action='store_true', default=False,
+             help="If given, the captured frames won't be shown")
+    args.add('-nt', '--dont_show_result', action='store_true', default=False,
+             help="If given, the transformed frames won't be shown")
+    args.add('--stdout', action='store_true', default=False,
+             help='If given, result will be output raw to the standard output. '
+                  'Useful for straming')
+
+    settings = args.parse_args()
+    settings.show_image = not settings.dont_show_image
+    settings.show_result = not settings.dont_show_result
+    main(settings)
     sys.exit(0)
